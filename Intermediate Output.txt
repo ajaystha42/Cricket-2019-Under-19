@@ -1,0 +1,370 @@
+
+
+-----------------------------INTERMEDIATE FINAL VIEW---------------------------------------------------------
+
+Create or replace view View_final as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype='Final'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1, matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='Final'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='Final'
+
+)select * from abc order by rn ,teama desc;
+
+
+
+
+
+-----------------------------------INTERMEDIATE 3rd-place playoff VIEW-----------------------------------
+Create or replace view View_Third as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype = '3rd Place Playoff'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='3rd Place Playoff'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='3rd Place Playoff'
+
+)select * from abc order by rn ,teama desc;
+
+
+
+-----------------------------------INTERMEDIATE 5th-place playoff VIEW-----------------------------------
+Create or replace view View_Five as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype = '5th Place Playoff'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='5th Place Playoff'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='5th Place Playoff'
+
+)select * from abc order by rn ,teama desc;
+
+
+
+
+-----------------------------------INTERMEDIATE 7th-place playoff VIEW-----------------------------------
+Create or replace view View_Seven as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype = '7th Place Playoff'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='7th Place Playoff'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='7th Place Playoff'
+
+)select * from abc order by rn ,teama desc;
+
+
+
+
+-----------------------------------INTERMEDIATE SUPER LEAGUE SEMI - FINALS VIEW-----------------------------------
+Create or replace view View_superLeagueSemiFinal as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype = 'Super League SemiFinal'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='Super League SemiFinal'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='Super League SemiFinal'
+
+)select * from abc order by rn ,teama desc;
+
+
+
+
+-----------------------------------INTERMEDIATE SUPER LEAGUE PLAYOFF SEMI - FINALS VIEW-----------------------------------
+Create or replace view View_superleagueplayOffSemiFinal as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype = 'Super League Playoff SemiFinal'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='Super League Playoff SemiFinal'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='Super League Playoff SemiFinal'
+
+)select * from abc order by rn ,teama desc;
+
+
+
+select * from table_inter
+
+
+
+-----------------------------------INTERMEDIATE SUPER LEAGUE QUARTER FINALS VIEW-----------------------------------
+Create or replace view View_superleagueQuarterFinals as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype = 'Super League Quarter Final'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='Super League Quarter Final'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='Super League Quarter Final'
+
+)select * from abc order by rn ,teama desc;
+
+
+
+
+
+Create or Replace view View_Left
+as
+with group_left as
+(
+select decode(rm,2,'Final',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_final)
+Union all
+select decode(rm,2,'3rd Place Playoff',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_Third)
+union all
+select decode(rm,2,'5th Place Playoff',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_Five)
+union all
+select decode(rm,2,'7th Place Playoff',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_Seven)
+union all
+select decode(rm,3,'Super League SemiFinal',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_superLeagueSemiFinal)
+union all
+select decode(rm,3,'Super League Playoff SemiFinal',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_superleagueplayOffSemiFinal)
+union all
+select decode(rm,6,'Super League Quarter Final',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_superleagueQuarterFinals)
+
+)select * from group_left;
+
+select * from View_left
+
+
+
+
+
+
+
+
+-----------------------------------INTERMEDIATE 9th-place playoff VIEW-----------------------------------
+Create or replace view View_Nine as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype = '9th Place Playoff'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='9th Place Playoff'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='9th Place Playoff'
+
+)select * from abc order by rn ,teama desc;
+
+select decode(rm,1,'9th Place Playoff(Plate Final)',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_Nine);
+
+
+
+-----------------------------------INTERMEDIATE 11th-place playoff VIEW-----------------------------------
+Create or replace view View_Eleven as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype = '11th Place Playoff'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='11th Place Playoff'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='11th Place Playoff'
+
+)select * from abc order by rn ,teama desc;
+
+select decode(rm,1,'11th Place Playoff',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_Eleven);
+
+
+-----------------------------------INTERMEDIATE 13th-place playoff VIEW-----------------------------------
+Create or replace view View_thirteen as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype = '13th Place Playoff'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='13th Place Playoff'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='13th Place Playoff'
+
+)select * from abc order by rn ,teama desc;
+
+select decode(rm,1,'13th Place Playoff',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_thirteen);
+
+
+-----------------------------------INTERMEDIATE 15th-place playoff VIEW-----------------------------------
+Create or replace view View_fifteen as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype = '15th Place Playoff'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='15th Place Playoff'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='15th Place Playoff'
+
+)select * from abc order by rn ,teama desc;
+
+select decode(rm,1,'15th Place Playoff',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_fifteen);
+
+
+
+-----------------------------------INTERMEDIATE Plate Semi Finals VIEW-----------------------------------
+Create or replace view View_PlateSemiFinal as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype = 'Plate SemiFinal'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='Plate SemiFinal'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='Plate SemiFinal'
+
+)select * from abc order by rn ,teama desc;
+
+select decode(rm,1,'Plate SemiFinal',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_PlateSemiFinal);
+
+
+-----------------------------------INTERMEDIATE Plate Playoff Semi Finals VIEW-----------------------------------
+Create or replace view View_platePlayoffSemiFinal as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype = 'Plate Playoff SemiFinal'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='Plate Playoff SemiFinal'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='Plate Playoff SemiFinal'
+
+)select * from abc order by rn ,teama desc;
+
+select decode(rm,1,'Plate Playoff SemiFinal',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_PlayoffSemiFinal);
+
+-----------------------------------INTERMEDIATE Plate Quarter Finals VIEW-----------------------------------
+Create or replace view View_PlateQuarterFinal as
+with abc as
+(
+select rownum rn,teama, 'v' v,teamb,des from table_inter where matchtype = 'Plate Quarter Final'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where matchtype='Plate Quarter Final'
+Union all
+select rownum rn,' ',' ',' ',' ' from table_inter where matchtype='Plate Quarter Final'
+
+)select * from abc order by rn ,teama desc;
+
+select decode(rm,1,'Plate Quarter Final',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_PlateQuarterFinal);
+
+
+
+
+Create or replace view View_right as
+with group_right as
+(
+select decode(rm,2,'9th Place Playoff(Plate Final)',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_Nine)
+Union all
+select decode(rm,2,'11th Place Playoff',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_Eleven)
+Union all
+select decode(rm,2,'13th Place Playoff',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_thirteen)
+Union all
+select decode(rm,2,'15th Place Playoff',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_fifteen)
+Union all
+select decode(rm,3,'Plate SemiFinal',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_PlateSemiFinal)
+Union all
+select decode(rm,3,'Plate Playoff SemiFinal',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_PlayoffSemiFinal)
+Union all
+select decode(rm,6,'Plate Quarter Final',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from View_PlateQuarterFinal)
+)select * from group_right;
+
+
+select * from View_left
+
+Create or replace view View_top as
+select  ' ' c1,tab1.gr c2, tab1.teama c3, tab1.v c4, tab1.teamb c5, tab1.des c6,' ' c7, tab2.gr c8, tab2.teama c9, tab2.v c10, tab2.teamb c11, tab2.des c12 from (select rownum rn, gr, teama, v, teamb, des from View_Left) tab1
+join (select rownum rn,  gr, teama, v, teamb, des from View_right) tab2
+on
+tab1.rn = tab2.rn;
+
+
+
+----------------------------------------------INTERMEDIATE GROUP MATCH -------------------------------------------------
+
+
+create or replace view grpA as
+with groupa as
+(
+select rownum rn,teama, 'v' v,teamb, des from table_inter where (select country_group from table_all where country = upper(teama)) = 'A' AND matchtype='GroupStage'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where (select country_group from table_all where country = upper(teama)) = 'A' AND matchtype='GroupStage'
+UNION ALL
+select rownum rn, ' ',' ',' ',' ' from table_inter where (select country_group from table_all where country = upper(teama)) = 'A' AND matchtype='GroupStage'
+)select * from groupa order by rn, teama desc;
+
+create or replace view grpB as
+with groupb as
+(
+select rownum rn,teama, 'v' v,teamb, des from table_inter where (select country_group from table_all where country = upper(teama)) = 'B' AND matchtype='GroupStage'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where (select country_group from table_all where country = upper(teama)) = 'B' AND matchtype='GroupStage'
+UNION ALL
+select rownum rn, ' ',' ',' ',' ' from table_inter where (select country_group from table_all where country = upper(teama)) = 'B' AND matchtype='GroupStage'
+)select * from groupb order by rn, teama desc;
+
+
+create or replace view grpC as
+with groupc as
+(
+select rownum rn,teama, 'v' v,teamb, des from table_inter where (select country_group from table_all where country = upper(teama)) = 'C' AND matchtype='GroupStage'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where (select country_group from table_all where country = upper(teama)) = 'C' AND matchtype='GroupStage'
+UNION ALL
+select rownum rn, ' ',' ',' ',' ' from table_inter where (select country_group from table_all where country = upper(teama)) = 'C' AND matchtype='GroupStage'
+)select * from groupc order by rn, teama desc;
+
+create or replace view grpD as
+with groupd as
+(
+select rownum rn,teama, 'v' v,teamb, des from table_inter where (select country_group from table_all where country = upper(teama)) = 'D' AND matchtype='GroupStage'
+UNION ALL
+select rownum rn,fn_clean(teama,teamb,1,matchtype),' ',fn_clean(teama,teamb,2,matchtype),' ' from table_inter where (select country_group from table_all where country = upper(teama)) = 'D' AND matchtype='GroupStage'
+UNION ALL
+select rownum rn, ' ',' ',' ',' ' from table_inter where (select country_group from table_all where country = upper(teama)) = 'D' AND matchtype='GroupStage'
+)select * from groupd order by rn, teama desc;
+
+select decode(rm,9,'Group A',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from grpA);
+select decode(rm,9,'Group B',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from grpB);
+select decode(rm,9,'Group C',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from grpC);
+select decode(rm,9,'Group D',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from grpD);
+
+
+-----------------------------------------------------------MERGED OUTPUT-------------------------------------------------------------
+
+
+create or replace view group_ab_view as
+WITH group_ab as
+(
+select ' ' sp1,decode(rm,9,'Group A',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from grpA)
+UNION ALL
+select ' ',decode(rm,9,'Group B',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from grpB)
+)select * from group_ab;
+
+create or replace view group_cd_view as
+WITH group_cd as
+(
+select ' ' sp1,decode(rm,9,'Group C',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from grpC)
+UNION ALL
+select ' ',decode(rm,9,'Group D',' ') gr, teama, v, teamb, des from (select rownum rm, teama, v, teamb, des from grpD)
+)select * from group_cd;
+
+Create or replace view View_bottom as
+select tab1.sp1 c1, tab1.gr c2, tab1.teama c3, tab1.v c4, tab1.teamb c5, tab1.des c6, tab2.sp1 c7,tab2.gr c8, tab2.teama c9, tab2.v c10, tab2.teamb c11, tab2.des c12 from (select rownum rn, sp1, gr, teama, v, teamb, des from group_ab_view) tab1
+join (select rownum rn, sp1, gr, teama, v, teamb, des from group_cd_view) tab2
+on
+tab1.rn = tab2.rn;
+
+
+-----------------------------------------------------FINAL INTERMEDIATE OUTPUT --------------------------------------
+Create or replace view View_IntermediateOutput as
+select ' ' " ",' ' "  ",'Super Leage' "   ",' ' "    ",'Matches' "     ",' ' "      ",' ' "        ",' ' "          ",'Plate' "           ",' ' "              ",'Matches' "               ",' ' "                 " from dual
+UNION ALL
+select ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select * from View_top
+UNION ALL
+select ' ',' ',' ',' ',' ','Group',' ','Stage Matches',' ',' ',' ',' ' from dual
+UNION ALL
+select ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select * from View_bottom;
+
+select * from View_IntermediateOutput;
+

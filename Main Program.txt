@@ -1,0 +1,414 @@
+ ---------------------------------------------------------CRICKET CUP FOR UNDER 19-----------------------------------------------
+ 
+create table table_all(
+country varchar2(150),
+country_group varchar2(5),
+played number default 0,
+win number default 0,
+loss number default 0,
+tie number default 0,
+NR number default 0,
+points number default 0,
+NRR varchar2(50) default 0,
+
+matchtype varchar2(50) 
+
+);
+
+create table table_inter(
+TeamA varchar2(50) ,
+brun number default 0,
+bwicket number default 0,
+bover number default 0,
+
+TeamB varchar2(50) ,
+crun number default 0,
+cwicket number default 0,
+cover number default 0,
+des varchar2(200),
+dls varchar2(100),
+matchtype varchar2(50),
+totalovers number,
+targetedruns number,
+targetedovers number
+);
+
+---------------------------------------------INPUT FROM USER-------------------------------------------
+---------------------------------------------GROUP STAGE----------------------------------------------
+insert into table_all (country,country_group,matchtype) vALUES('Afghanistan','D','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('Australia','B','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('Bangladesh','C','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('England','B','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('India','A','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('New Zealand','A','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('Pakistan','C','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('South Africa','D','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('Sri Lanka','A','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('West Indies','B','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('Zimbabwe','C','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('Nigeria','B','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('Canada','D','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('United Arab Emirates','D','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('Japan','A','Groupstage');
+insert into table_all (country,country_group,matchtype) vALUES('Scotland','C','Groupstage');
+
+----------------------------============================================================
+
+create or replace view View_A as select country,country_group,played,win,loss,tie,nr,points,nrr from table_all where country_group = 'A' order by points DESC;
+
+create or replace view View_B as select country,country_group,played,win,loss,tie,nr,points,nrr from table_all where country_group = 'B' order by points DESC;
+
+create or replace view View_C as select country,country_group,played,win,loss,tie,nr,points,nrr from table_all where country_group = 'C' order by points DESC;
+
+create or replace view View_D as select country,country_group,played,win,loss,tie,nr,points,nrr from table_all where country_group = 'D' order by points DESC;
+
+
+create or replace function fn_nrr(v_country varchar2) 
+return varchar2
+as
+cursor cur_a(team IN varchar2) is select teama,teamb,firstrun,firstover,secondrun,secondover,secondwicket,dls,targetedovers,targetedruns from intermediate_details where teama=team or teamb=team and Matchtype='GroupStage';
+nrr number;
+var_teama varchar2 (50);
+var_teamb varchar2 (50);
+v_firstrun number := 0;
+v_firstover number := 0;
+v_secondover number := 0;
+v_secondrun number := 0;
+totalownruns number := 0;
+totalownovers number := 0;
+totalagainstruns number := 0;
+totalagainstovers number := 0;
+v_secondwicket number := 0;
+owntemp number := 0;
+owntemp2 number := 0;
+v_dls varchar2(20);
+v_targetedovers number := 0;
+v_targetedruns number := 0;
+againsttemp number := 0;
+againsttemp2 number := 0;
+begin
+
+
+OPEN cur_a(v_country);
+    LOOP
+        FETCH cur_a INTO var_teama, var_teamb, v_firstrun, v_firstover, v_secondrun, v_secondover,v_secondwicket,v_dls,v_targetedovers,v_targetedruns ;  
+        EXIT WHEN cur_a%NOTFOUND; 
+        if(var_teama = v_country)then
+            if(v_dls = 'DLS')then
+                totalownruns:=totalownruns+(v_targetedruns-1);
+                owntemp2:=((trunc(v_targetedovers)*6)+(v_targetedovers-trunc(v_targetedovers))*10)/6;
+                owntemp:=totalownovers+owntemp2;
+                totalownovers:=((trunc(owntemp)*6)+(owntemp-trunc(owntemp))*10)/6; 
+               
+                totalagainstruns:=totalagainstruns+v_secondrun;
+                if(v_secondwicket = 10)then
+                againsttemp2:=((trunc(v_targetedovers)*6)+(v_targetedovers-trunc(v_targetedovers))*10)/6;
+                againsttemp:=totalagainstovers+againsttemp2;
+                totalagainstovers:=((trunc(againsttemp)*6)+(againsttemp-trunc(againsttemp))*10)/6;
+                else
+                againsttemp2:=((trunc(v_secondover)*6)+(v_secondover-trunc(v_secondover))*10)/6;
+                againsttemp:=totalagainstovers+againsttemp2;
+                totalagainstovers:=((trunc(againsttemp)*6)+(againsttemp-trunc(againsttemp))*10)/6;
+                end if;
+            else
+                totalownruns:=totalownruns+v_firstrun;
+                totalownovers:=totalownovers+50;
+
+
+
+
+
+                totalagainstruns:=totalagainstruns+v_secondrun;
+                if(v_secondwicket = 10)then
+                againsttemp := totalagainstovers+50;
+                totalagainstovers:=((trunc(againsttemp)*6)+(againsttemp-trunc(againsttemp))*10)/6;
+                else
+                againsttemp2:=((trunc(v_secondover)*6)+(v_secondover-trunc(v_secondover))*10)/6;
+                againsttemp:=totalownovers+againsttemp2;
+                totalagainstovers:=((trunc(againsttemp)*6)+(againsttemp-trunc(againsttemp))*10)/6;
+                end if;
+            end if;
+                
+        elsif(var_teamb = v_country) then
+            if(v_dls = 'DLS') then
+                totalownruns:=totalownruns+v_secondrun;
+                if(v_secondwicket = 10)then
+                owntemp2:=((trunc(v_targetedovers)*6)+(v_targetedovers-trunc(v_targetedovers))*10)/6;
+                owntemp:=totalownovers+owntemp2;
+                totalagainstovers:=((trunc(owntemp)*6)+(owntemp-trunc(owntemp))*10)/6;
+                else
+                owntemp2:=((trunc(v_secondover)*6)+(v_secondover-trunc(v_secondover))*10)/6;
+                owntemp:=totalownovers+owntemp2;
+                totalagainstovers:=((trunc(owntemp)*6)+(owntemp-trunc(owntemp))*10)/6;
+                end if;
+                
+                totalagainstruns:= totalagainstruns+(v_targetedruns-1);
+                againsttemp2:=((trunc(v_targetedovers)*6)+(v_targetedovers-trunc(v_targetedovers))*10)/6;
+                againsttemp:=totalagainstovers+againsttemp2;
+                totalagainstovers:=((trunc(againsttemp)*6)+(againsttemp-trunc(againsttemp))*10)/6;
+                
+            else
+                totalownruns:=totalownruns+v_secondrun;
+                if(v_secondwicket = 10)then
+                owntemp:=totalownovers+50;
+                totalownovers:=((trunc(owntemp)*6)+(owntemp-trunc(owntemp))*10)/6;
+                else
+                owntemp2:=((trunc(v_secondover)*6)+(v_secondover-trunc(v_secondover))*10)/6;
+                owntemp:=totalownovers+owntemp2;
+                totalownovers:=((trunc(owntemp)*6)+(owntemp-trunc(owntemp))*10)/6;
+                end if;
+                
+                totalagainstruns:=totalagainstruns+v_firstrun;
+                againsttemp:=totalagainstovers+50;
+                totalagainstovers:=((trunc(againsttemp)*6)+(againsttemp-trunc(againsttemp))*10)/6;
+            end if;
+        end if;
+
+end loop;
+        nrr:=(totalownruns/totalownovers)-(totalagainstruns/totalagainstovers);
+     
+return nrr;
+end;
+/
+
+create or replace function fn_clean (v_team1 varchar2, v_team2 varchar2, v_id number,v_matchtype varchar2)
+return varchar2
+is
+               v_brun table_inter.brun%TYPE; 
+                v_bover table_inter.bover%TYPE;
+             v_bwicket table_inter.bwicket%TYPE;
+               v_crun table_inter.crun%TYPE;
+                v_cover table_inter.cover%TYPE;
+             v_cwicket table_inter.cwicket%TYPE;
+             
+ bclean varchar2(1000);
+    cclean varchar2(1000);
+    v_sql varchar2(1000);
+begin
+    v_sql:='select brun, bover, bwicket, crun, cover, cwicket from table_inter where ((teama = '''|| v_team1|| ''' and teamb = '''|| v_team2|| ''') or  (teamb = '''||v_team1||''' and teama = '''|| v_team2|| ''')) and matchtype = '''|| v_matchtype ||'''';
+    execute immediate (v_sql) into v_brun, v_bover, v_bwicket, v_crun, v_cover, v_cwicket; 
+    if v_bwicket = 10  and v_cwicket = 10 then 
+        bclean:=v_brun||'('||v_bover||' overs)'; 
+        cclean:=v_crun||'('||v_cover||' overs)'; 
+    elsif v_bwicket = 10 and v_cwicket <> 10 then 
+        bclean:=v_brun||'('||v_bover||' overs)'; 
+        cclean:=v_crun||'/'||v_cwicket||'('||v_cover||' overs)'; 
+    elsif v_bwicket <> 10 and v_cwicket = 10 then 
+        bclean:=v_brun||'/'||v_bwicket||'('||v_bover||' overs)'; 
+        cclean:=v_crun||'('||v_cover||' overs)'; 
+    else 
+        bclean:=v_brun||'/'||v_bwicket||'('||v_bover||' overs)'; 
+        cclean:=v_crun||'/'||v_cwicket||'('||v_cover||' overs)'; 
+    end if; 
+    if v_bover = 0 then
+        bclean := ' ';
+    end if;
+    if v_cover = 0 then    
+        cclean := ' ';
+    end if;
+    case v_id  
+        when 1 then 
+            return bclean; 
+        when 2 then 
+            return cclean; 
+        else
+            return 'Ajay';
+    end case; 
+
+
+
+end;
+/
+
+-------------------------------------------------------GROUP MATCH------------------------------------------------
+create or replace procedure sp_GroupMatch(bat varchar2,brun number,bwicket number,bover number,chase varchar2,crun number,cwicket number,cover number,dls varchar2,matchtype varchar2,totalovers number,targetedruns number,targetedovers number)
+as
+rundiff varchar2(10);
+wickdiff varchar2(10);
+
+batplay table_all.played%type;
+chaseplay table_all.played%type;
+des varchar2(100);
+nrr varchar2(100);
+dlsresult number;
+ownplay varchar2(100);
+againstplay varchar2(100);
+batnrr varchar2(100);
+chasenrr varchar2(100);
+begin
+
+rundiff := abs(brun - crun);
+wickdiff := abs(10-cwicket);
+
+
+ if(dls = 'DLS') then
+
+      if (targetedruns>crun) then  
+        dlsresult  := targetedruns-crun-1;
+        des := bat ||' won by '|| dlsresult ||' runs(DLS METHOD)';
+        if(matchtype = 'GroupStage') then
+update table_all set played=played+1,win=win+1,points=points+2 where country = bat;
+update table_all set loss=loss+1,played=played+1 where country = chase;
+
+
+end if;
+
+
+elsif(crun >= targetedruns ) then     
+        dlsresult := 10-cwicket;
+         des := chase ||' won by '|| dlsresult ||' wickets(DLS METHOD)';
+
+if(matchtype = 'GroupStage') then
+update table_all set played=played+1,win=win+1,points=points+2 where country = chase;
+update table_all set loss=loss+1,played=played+1 where country = bat;
+end if;
+end if;
+insert into table_inter Values(bat,brun,bwicket,bover,chase,crun,cwicket,cover,des,dls,matchtype,totalovers,targetedruns,targetedovers);
+else
+if(brun = 0 or crun = 0) then 
+dbms_output.put_line('NR updated');
+if(matchtype = 'GroupStage') then
+update table_all set played=played+1,win=win+1,points=points+1 where country = bat;
+update table_all set loss=loss+1,played=played+1,points=points+1 where country = chase;
+end if;
+insert into table_inter Values(bat,brun,bwicket,bover,chase,crun,cwicket,cover,'NO RESULT',dls,matchtype,totalovers,targetedruns,targetedovers);
+
+elsif(brun>crun)   
+then
+if(matchtype = 'GroupStage') then
+update table_all set played=played+1,win=win+1,points=points+2 where country = bat;
+update table_all set loss=loss+1,played=played+1 where country = chase;
+end if;
+des :=bat || ' won ' || chase || ' by ' || rundiff || ' runs';
+dbms_output.put_line(des);  
+insert into table_inter Values(bat,brun,bwicket,bover,chase,crun,cwicket,cover,des,dls,matchtype,totalovers,targetedruns,targetedovers);
+elsif (crun>brun) then
+if(matchtype = 'GroupStage') then
+update table_all set played=played+1,win=win+1,points=points+2 where country = chase;
+update table_all set loss=loss+1,played=played+1 where country = bat;
+end if;
+
+des :=chase || ' won ' || bat || ' by ' || wickdiff || ' wickets';
+dbms_output.put_line(des);  
+
+insert into table_inter Values(bat,brun,bwicket,bover,chase,crun,cwicket,cover,des,dls,matchtype,totalovers,targetedruns,targetedovers);
+else
+if(matchtype = 'GroupStage') then
+update table_all set played=played+1,points=points+1,tie=tie+1 where chase = country;
+update table_all set played=played+1,points=points+1,tie=tie+1 where bat = country;
+end if;
+
+insert into table_inter Values(bat,brun,bwicket,bover,chase,crun,cwicket,cover,'Its a tie',dls,matchtype,totalovers,targetedruns,targetedovers);
+
+dbms_output.put_line('Its a tie');
+end if;
+end if;
+
+
+end ;
+/
+
+
+ -------------------------------------------GROUP A ------------------------------
+ 
+exec sp_GroupMatch('New Zealand',195,2,10.5,'Japan',0,0,0,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('India',297,4,50,'Sri Lanka',207,10,45.5,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('India',115,0,23,'New Zealand',147,10,21,'DLS','GroupStage',23,192,23);  
+exec sp_GroupMatch('Japan',41,10,22.5,'India',42,0,4.5,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('Sri Lanka',242,9,50,'New Zealand',243,7,49.5,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('Japan',43,10,18.3,'Sri Lanka',47,1,8.3,'null','GroupStage',22,0,0);
+
+ 
+ --------------------------------------------GROUP B --------------------------------
+exec sp_GroupMatch('Australia',179,10,35.4,'West Indies',180,7,46,'null','GroupStage',49,0,0);
+exec sp_GroupMatch('West Indies',267,7,50,'England',184,9,43.4,'DLS','GroupStage',50,256,43.4);  
+exec sp_GroupMatch('Nigeria',61,10,30.3,'Australia',62,0,7.4,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('England',252,7,50,'Australia',253,8,50,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('West Indies',303,8,50,'Nigeria',57,10,21.4,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('Nigeria',58,10,27.5,'England',64,2,11,'null','GroupStage',50,0,0);
+
+ 
+ ---------------------------------------------GROUP C ---------------------------------
+exec sp_GroupMatch('Zimbabwe',137,6,28.1,'Bangladesh',132,1,11.2,'DLS','GroupStage',28.1,130,22);   
+exec sp_GroupMatch('Scotland',75,10,23.5,'Pakistan',77,3,11.4,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('Scotland',89,10,30.3,'Bangladesh',91,3,16.4,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('Pakistan',294,9,50,'Zimbabwe',256,10,46.3,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('Bangladesh',106,9,25,'Pakistan',0,0,0,'null','GroupStage',37,0,0);
+exec sp_GroupMatch('Scotland',140,10,37.2,'Zimbabwe',146,2,17.1,'null','GroupStage',42,0,0);
+
+ 
+ ----------------------------------------------GROUP D --------------------------------------
+exec sp_GroupMatch('South Africa',129,10,29.1,'Afghanistan',130,3,25,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('Canada',231,8,50,'United Arab Emirates',232,2,38.4,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('South Africa',349,8,50,'Canada',199,10,41.1,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('Afghanistan',265,6,50,'United Arab Emirates',105,10,32.4,'null','GroupStage',50,0,0);
+exec sp_GroupMatch('Afghanistan',0,0,0,'canada',0,0,0,'null','GroupStage',0,0,0);
+exec sp_GroupMatch('South Africa',299,8,50,'United Arab Emirates',112,3,23.5,'DLS','GroupStage',50,136,23.5);
+
+
+---==================================Other Inputs=====================================================
+
+
+-- bat ,brun ,bwicket ,bover ,chase ,crun ,cwicket ,cover ,dls ,matchtype ,targetedruns ,targetedovers 
+
+--------------------------QUARTER FINAL FOR ALL BOTTOM 8 AND TOP 8 TEAMS ----------------------
+--------------------------PLAY OFF FOR LOSING TEAMS ------------------------------------------
+------------------------------SEMI FINAL FOR WINNING TEAMS------------------------------------
+
+
+--------------===============PLATE LEAGUE FOR BOTTOM EIGHT MATCH ======================================
+-------------------------------PLATE QUARTER FINAL----------------------------------------
+
+
+---==================================Other Inputs=====================================================
+exec sp_GroupMatch('Sri lanka',306,7,50,'Nigeria',73,10,17.3,'none','Plate Quarter Final',50,0,0);                             
+exec sp_GroupMatch('Japan',93,10,38.4,'England',94,1,11.3,'none','Plate Quarter Final',50,0,0);                                
+exec sp_GroupMatch('Zimbabwe',271,7,50,'Canada',176,10,47.3,'none','Plate Quarter Final',50,0,0);                              
+exec sp_GroupMatch('United Arab Emirates',249,10,49,'Scotland',250,3,44.3,'none','Plate Quarter Final',50,0,0);                
+
+
+
+---------------------------------PLATE PLAY OFF FINALS----------------------------------------
+exec sp_GroupMatch('Nigeria',145,10,46.4,'United Arab Emirates',146,3,29.2,'none','Plate Playoff SemiFinal',50,0,0);           
+exec sp_GroupMatch('Canada',300,7,50,'Japan',118,10,29.4,'none','Plate Playoff SemiFinal',50,0,0);                             
+
+-------------------------------PLATE SEMI FINALS--------------------------------------------------
+exec sp_GroupMatch('Sri Lanka',277,6,50,'Scotland',149,8,40,'DLS','Plate SemiFinal',50,247,40);                                
+exec sp_GroupMatch('England',286,9,50,'Zimbabwe',211,10,40.5,'none','Plate SemiFinal',50,0,0);                                 
+
+
+-------------------------------SUPER LEAGUE FOR TOP EIGHT TEAMS-------------------------------------
+-----------------------------SUPER LEAGUE QUARTER FINAL-------------------------------------------
+
+
+exec sp_GroupMatch('India',233,9,50,'Australia',159,10,43.3,'none','Super League Quarter Final',50,0,0);                       
+exec sp_GroupMatch('West Indies',238,10,47.5,'New Zealand',239,8,49.4,'none','Super League Quarter Final',50,0,0);             
+exec sp_GroupMatch('Bangladesh',261,5,50,'South Africa',157,10,42.3,'none','Super League Quarter Final',50,0,0);               
+exec sp_GroupMatch('Afghanistan',189,10,49.1,'Pakistan',190,4,41.1,'none','Super League Quarter Final',50,0,0);                
+
+
+--------------------------------------SUPER LEAGUE PLAYOFF SEMI FINALS--------------------------------------
+exec sp_GroupMatch('South Africa',143,10,38.2,'West Indies',147,6,41.4,'none','Super League Playoff SemiFinal',50,0,0);        
+exec sp_GroupMatch('Afghanistan',191,7,50,'Australia',195,6,49.5,'none','Super League Playoff SemiFinal',50,0,0);              
+
+--------------------------------------------SUPER LEAGUE SEMI FINALS---------------------------------------------
+exec sp_GroupMatch('Pakistan',172,10,43.1,'India',176,0,35.2,'none','Super League SemiFinal',50,0,0);                          
+exec sp_GroupMatch('New Zealand',211,8,50,'Bangladesh',215,4,44.1,'none','Super League SemiFinal',50,0,0);                     
+
+
+
+-----------------------------------------PLACEMENT MATCHES-------------------------------------------------- 
+exec sp_GroupMatch('Japan',115,10,42,'Nigeria',116,2,22.4,'none','15th Place Playoff',50,0,0);                                 
+exec sp_GroupMatch('United Arab Emirates',174,10,44.1,'Canada',179,6,42.2,'none','13th Place Playoff',50,0,0);                 
+exec sp_GroupMatch('Zimbabwe',354,8,50,'Scotland',182,10,33.4,'none','11th Place Playoff',50,0,0);                             
+exec sp_GroupMatch('England',279,7,50,'Sri Lanka',127,10,31,'none','9th Place Playoff',50,0,0);                                
+exec sp_GroupMatch('South Africa',154,10,39.3,'Afghanistan',158,5,40.2,'none','7th Place Playoff',50,0,0);                     
+exec sp_GroupMatch('Australia',319,8,50,'West Indies',62,1,12.3,'none','5th Place Playoff',50,0,0);     
+exec sp_GroupMatch('Pakistan',319,8,50,'New Zealand',62,1,12.3,'none','3rd Place Playoff',0,0,0);
+
+
+ --------------------------------------------FINAL -------------------------------------------------------------
+exec sp_GroupMatch('India',177,10,47.2,'Bangladesh',170,7,42.1,'DLS','Final',50,170,46);
+
+
+

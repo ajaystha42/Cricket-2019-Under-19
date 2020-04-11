@@ -1,0 +1,87 @@
+
+
+ ------=================================== LEFT PART OF FINAL OUTPUT=============================================
+Create or replace view View_groupFinal as
+with abc as
+(
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,country,to_char(played),to_char(win),to_char(loss),to_char(tie),to_char(nr),to_char(points),trunc(fn_nrr(country),2) from table_all where country_group='A'
+Union all
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,country,to_char(played),to_char(win),to_char(loss),to_char(tie),to_char(nr),to_char(points),trunc(fn_nrr(country),2) from table_all where country_group='B'
+Union all
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,country,to_char(played),to_char(win),to_char(loss),to_char(tie),to_char(nr),to_char(points),trunc(fn_nrr(country),2) from table_all where country_group='C'
+Union all
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,country,to_char(played),to_char(win),to_char(loss),to_char(tie),to_char(nr),to_char(points),trunc(fn_nrr(country),2) from table_all where country_group='D'
+Union all
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+)select * from abc;
+
+
+
+
+ ------=================================== RIGHT PART OF FINAL OUTPUT=============================================
+Create or replace view View_finalMiddle as
+with abc as
+(
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+select rownum rn,' ',' ',' ',' ',' ',' ',' ',' ' from dual
+UNION ALL
+
+
+
+
+)select * from abc;
